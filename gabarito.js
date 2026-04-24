@@ -26,10 +26,6 @@ let gab = [];
 let nom = [];
 let resp = [];
 
-for(let i = 0; i < gabarito.length; i += 1){
-    gab.push(gabarito[i]);
-}
-
 for(let j = 0; j < nomes.length; j += 1){
     nom.push(nomes[j].trim());
 }
@@ -37,8 +33,19 @@ for(let j = 0; j < nomes.length; j += 1){
 for(let k = 0; k < nomes.length; k += 1){
     resp.push(respostas[k].trim());
 }
-console.log(gab, nom, resp);
 
+for(let l = 0; l < nom.length; l += 1){
+        if(nom[l] && resp[l]){
+        let acertos = [];
+        acertos.push(resp[l]);
+        }
+         for(let m = 0; m < gab.length; m += 1){
+            if(gabarito[m] == acertos[m]){ 
+                total.push(m + 1)
+            }     
+}
+ console.log(`O aluno(a) ${nom[l]} acertou a questões ${total}`);
+}
 // Após o uso, feche a interface de leitura
+console.log(gabarito, nom, resp);
 term.close();
-
