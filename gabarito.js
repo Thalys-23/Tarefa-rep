@@ -17,11 +17,11 @@ const term = createInterface({
 
 // Exemplo de uso
 const gabarito = await term.question("Qual o gabarito da prova? ");
-const nomalun = await term.question("Quais os nomes dos alunos?(separados por ',') ");
-const respalun = await term.question("Quais as respostas dos alunos?(separadas por ',')");
+const nomAlun = await term.question("Quais os nomes dos alunos?(separados por ',') ");
+const respAlun = await term.question("Quais as respostas dos alunos?(separadas por ',')");
 
-let nomes = nomalun.split(',');
-let respostas = respalun.split (',');
+let nomes = nomAlun.split(',');
+let respostas = respAlun.split (',');
 let gab = [];
 let nom = [];
 let resp = [];
@@ -41,3 +41,4 @@ console.log(gab, nom, resp);
 
 // Após o uso, feche a interface de leitura
 term.close();
+
