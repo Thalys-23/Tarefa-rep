@@ -41,3 +41,5 @@ console.log(gab, nom, resp);
 
 // Após o uso, feche a interface de leitura
 term.close();
+
+console.log(nomes);
