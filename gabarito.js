@@ -9,43 +9,76 @@ acima) */
 
 import { createInterface } from 'node:readline/promises';
 
-// Cria uma interface de leitura para o terminal
-const term = createInterface({ 
-    input: process.stdin, 
-    output: process.stdout 
+const term = createInterface({
+    input: process.stdin,
+    output: process.stdout
 });
 
-// Exemplo de uso
-const gabarito = await term.question("Qual o gabarito da prova? ");
-const nomAlun = await term.question("Quais os nomes dos alunos?(separados por ',') ");
-const respAlun = await term.question("Quais as respostas dos alunos?(separadas por ',')");
+// Entrada
+const gabaritoStr = await term.question("Qual o gabarito da prova? (separado por ',')\nR: ");
+const nomAlun = await term.question("Quais os nomes dos alunos?(separados por ',')\nR: ");
+const respAlunStr = await term.question("Quais as respostas dos alunos?(cada aluno separado por ';', e dentro por ',')\nR: ");
+
+let gabarito = gabaritoStr.split(',');
+for (let i = 0; i < gabarito.length; i++) {
+    gabarito[i] = gabarito[i].trim().toUpperCase();
+}
 
 let nomes = nomAlun.split(',');
-let respostas = respAlun.split (',');
-let gab = [];
-let nom = [];
-let resp = [];
-
-for(let j = 0; j < nomes.length; j += 1){
-    nom.push(nomes[j].trim());
+for (let i = 0; i < nomes.length; i++) {
+    nomes[i] = nomes[i].trim();
 }
 
-for(let k = 0; k < nomes.length; k += 1){
-    resp.push(respostas[k].trim());
+let respostasAlunosStr = respAlunStr.split(';');
+let respostasAlunos = [];
+for (let i = 0; i < respostasAlunosStr.length; i++) {
+    let respostas = respostasAlunosStr[i].split(',');
+    for (let j = 0; j < respostas.length; j++) {
+        respostas[j] = respostas[j].trim().toUpperCase();
+    }
+    respostasAlunos.push(respostas);
 }
 
-for(let l = 0; l < nom.length; l += 1){
-        if(nom[l] && resp[l]){
-        let acertos = [];
-        acertos.push(resp[l]);
+const qtdAlunos = nomes.length;
+const qtdQuestoes = gabarito.length;
+
+// Contagem de acertos por questão
+let acertosPorQuestao = [];
+for (let i = 0; i < qtdQuestoes; i++) {
+    acertosPorQuestao[i] = 0;
+}
+
+for (let i = 0; i < qtdAlunos; i++) {
+    for (let q = 0; q < qtdQuestoes; q++) {
+        if (respostasAlunos[i][q] === gabarito[q]) {
+            acertosPorQuestao[q] += 1;
         }
-         for(let m = 0; m < gab.length; m += 1){
-            if(gabarito[m] == acertos[m]){ 
-                total.push(m + 1)
-            }     
+    }
 }
- console.log(`O aluno(a) ${nom[l]} acertou a questões ${total}`);
+
+// Estatísticas por questão
+console.log("\n=== Estatísticas por Questão ===");
+for (let q = 0; q < qtdQuestoes; q++) {
+    let acertos = acertosPorQuestao[q];
+    let porcentagem = Math.round((acertos / qtdAlunos) * 100);
+    console.log(`${q + 1}ª Questão: ${acertos}/${qtdAlunos} (${porcentagem}%)`);
 }
-// Após o uso, feche a interface de leitura
-console.log(gabarito, nom, resp);
+
+// Estatísticas por aluno
+console.log("\n=== Estatísticas por Aluno ===");
+for (let i = 0; i < qtdAlunos; i++) {
+    let acertosAluno = [];
+    let totalAcertos = 0;
+
+    for (let q = 0; q < qtdQuestoes; q++) {
+        if (respostasAlunos[i][q] === gabarito[q]) {
+            acertosAluno.push(q + 1);
+            totalAcertos++;
+        }
+    }
+
+    let porcentagemAluno = Math.round((totalAcertos / qtdQuestoes) * 100);
+    console.log(`${nomes[i]} acertou as questões ${acertosAluno.join(', ') || 'nenhuma'} → ${totalAcertos}/${qtdQuestoes} (${porcentagemAluno}%)`);
+}
+
 term.close();
